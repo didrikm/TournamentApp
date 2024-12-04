@@ -27,6 +27,10 @@ namespace TournamentData.Repositories
             return await _context.Game.FindAsync(id);
         }
 
+        public async Task<Game?> GetGameAsync(string title)
+        {
+            return await _context.Game.FirstOrDefaultAsync(g => g.Title == title);
+        }
         public async Task<IEnumerable<Game>> GetGamesAsync()
         {
             return await _context.Game.ToListAsync();

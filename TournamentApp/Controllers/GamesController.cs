@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using Bogus.DataSets;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TournamentCore.DTOs;
@@ -31,11 +32,18 @@ namespace TournamentApi.Controllers
         }
 
         // GET: api/Games/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Game>> GetGame(int id)
+        [HttpGet("{identifier}")]
+        public async Task<ActionResult<Game>> GetGame(string identifier)
         {
-            var game = await _uow.GameRepo.GetGameAsync(id);
-
+            Game? game;
+            if (int.TryParse(identifier, out int id))
+            {
+               game = await _uow.GameRepo.GetGameAsync(id);
+            }
+            else
+            {
+                game = await _uow.GameRepo.GetGameAsync(identifier);
+            }
             if (game == null)
             {
                 return NotFound();
