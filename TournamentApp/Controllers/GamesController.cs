@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TournamentCore.DTOs;
 using TournamentCore.Entities;
@@ -30,7 +31,7 @@ namespace TournamentApi.Controllers
         }
 
         // GET: api/Games/5
-        [HttpGet("{id}")] 
+        [HttpGet("{id}")]
         public async Task<ActionResult<Game>> GetGame(int id)
         {
             var game = await _uow.GameRepo.GetGameAsync(id);
@@ -123,5 +124,52 @@ namespace TournamentApi.Controllers
         {
             return await _uow.GameRepo.AnyGameAsync(id);
         }
+        // PATCH: api/Games/5
+        [HttpPatch("{gameId}")]
+        public async Task<ActionResult<GameDTO>> PatchGame(int gameId, [FromBody]
+            JsonPatchDocument<GameDTO> patchDocument)
+        {
+
+            if (patchDocument == null)
+            {
+                return BadRequest();
+            }
+
+            var oldGame = await _uow.GameRepo.GetGameAsync(gameId);
+
+            if (oldGame == null)
+            {
+                return NotFound();
+            }
+
+            var gameDTO = _mapper.MapToGameDTO(oldGame);
+
+            patchDocument.ApplyTo(gameDTO, ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            oldGame.Title = gameDTO.Title;
+            oldGame.Time = gameDTO.Time;
+
+            _uow.GameRepo.Update(oldGame);
+
+            try
+            {
+                await _uow.CompleteAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!await _uow.GameRepo.AnyGameAsync(gameId))
+                {
+                    return NotFound();
+                }
+            }
+
+            return NoContent();
+        }
+
     }
 }
