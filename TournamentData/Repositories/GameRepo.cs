@@ -39,7 +39,7 @@ namespace TournamentData.Repositories
 
         public void Update(Game Game)
         {
-            throw new NotImplementedException(); // TODO: implementera update game
+            _context.Update(Game);
         }
     }
 }

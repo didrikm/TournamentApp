@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TournamentCore.DTOs;
 using TournamentCore.Entities;
 using TournamentCore.Mapping;
@@ -46,41 +47,46 @@ namespace TournamentApi.Controllers
 
         // PUT: api/Games/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> PutGame(int id, GameDTO gameDTO)
-        //{
-        //    if (id != gameDTO.Id)
-        //    {
-        //        return BadRequest();
-        //    }
-            
-        //    if(!await _uow.GameRepo.AnyGameAsync(id))
-        //    {
-        //        return NotFound();
-        //    }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutGame(int id, GameDTO dto)
+        {
+            if (id != dto.Id)
+            {
+                return BadRequest();
+            }
 
+            var oldGame = await _uow.GameRepo.GetGameAsync(id);
 
+            if (oldGame == null)
+            {
+                return NotFound("The specified GameId does not exist.");
+            }
 
-        //    _context.Entry(game).State = EntityState.Modified;
+            if (!await _uow.TournamentRepo.AnyTournamentAsync(dto.TournamentId))
+            {
+                return BadRequest("The specified TournamentId does not exist.");
+            }
 
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!GameExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
+            oldGame.Title = dto.Title;
+            oldGame.Time = dto.Time;
+            oldGame.TournamentId = dto.TournamentId;
 
-        //    return NoContent();
-        //}
+            _uow.GameRepo.Update(oldGame);
+
+            try
+            {
+                await _uow.CompleteAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!await _uow.GameRepo.AnyGameAsync(id))
+                {
+                    return NotFound();
+                }
+            }
+
+            return NoContent();
+        }
 
         // POST: api/Games
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
