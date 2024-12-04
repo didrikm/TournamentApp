@@ -53,13 +53,17 @@ namespace TournamentApi.Controllers
             {
                 return BadRequest();
             }
-            if(!await _uow.TournamentRepo.AnyTournamentAsync(id))
+
+            var oldTournament = await _uow.TournamentRepo.GetTournamentAsync(id);
+
+            if(oldTournament == null)
             {
                 return NotFound();
             }
 
-            var tournament = _mapper.MapToUpdateTournament(dto);
-            _uow.TournamentRepo.Update(tournament);
+            oldTournament.Title = dto.Title;
+            oldTournament.StartDate = dto.StartDate;
+            _uow.TournamentRepo.Update(oldTournament);
 
             try
             {
@@ -89,7 +93,7 @@ namespace TournamentApi.Controllers
             _uow.TournamentRepo.Add(tournament);
             await _uow.CompleteAsync();
 
-            return CreatedAtAction("GetTournament", new { id = tournament.Id }, tournament);
+            return CreatedAtAction(nameof(GetTournament), new { id = tournament.Id }, _mapper.MapToTournamentDTO(tournament));
         }
 
         // DELETE: api/Tournaments/5

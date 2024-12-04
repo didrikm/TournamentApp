@@ -13,7 +13,27 @@ namespace TournamentCore.Mapping
                 Title = game.Title,
                 Time = game.Time,
                 TournamentId = game.TournamentId,
-                //tournament = game.tournament
+            };
+        }
+        public static Game CreationToGame(GameCreationDTO dto)
+        {
+            return new Game
+            {
+                Title = dto.Title,
+                Time = dto.Time,
+                TournamentId = dto.TournamentId,
+                tournament = null // TODO: set in service layer
+            };
+        }
+        public static Game UpdateToGame(GameDTO dto)
+        {
+            return new Game
+            {
+                Id = dto.Id,
+                Title = dto.Title,
+                Time = dto.Time,
+                TournamentId = dto.TournamentId,
+                tournament = null // TODO: set in service layer
             };
         }
     }

@@ -7,7 +7,7 @@ namespace TournamentCore.Mapping
     {
         public Game MapToCreationGame(GameCreationDTO dto)
         {
-            throw new NotImplementedException();
+            return GameMapper.CreationToGame(dto);
         }
 
         public Tournament MapToCreationTournament(TournamentCreationDTO dto)
