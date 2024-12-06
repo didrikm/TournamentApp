@@ -1,5 +1,4 @@
-﻿using Bogus.DataSets;
-using Microsoft.AspNetCore.JsonPatch;
+﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TournamentCore.DTOs;
@@ -7,7 +6,7 @@ using TournamentCore.Entities;
 using TournamentCore.Mapping;
 using TournamentCore.Repositories;
 
-namespace TournamentApi.Controllers
+namespace TournamentPresentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -38,7 +37,7 @@ namespace TournamentApi.Controllers
             Game? game;
             if (int.TryParse(identifier, out int id))
             {
-               game = await _uow.GameRepo.GetGameAsync(id);
+                game = await _uow.GameRepo.GetGameAsync(id);
             }
             else
             {

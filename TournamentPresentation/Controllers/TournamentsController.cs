@@ -6,7 +6,7 @@ using TournamentCore.Mapping;
 using TournamentCore.DTOs;
 using Microsoft.EntityFrameworkCore;
 
-namespace TournamentApi.Controllers
+namespace TournamentPresentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -57,7 +57,7 @@ namespace TournamentApi.Controllers
 
             var oldTournament = await _uow.TournamentRepo.GetTournamentAsync(id);
 
-            if(oldTournament == null)
+            if (oldTournament == null)
             {
                 return NotFound();
             }
