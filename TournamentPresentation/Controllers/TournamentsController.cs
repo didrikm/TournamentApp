@@ -108,11 +108,6 @@ namespace TournamentPresentation.Controllers
             return NoContent();
         }
 
-        private async Task<bool> TournamentExists(int id)
-        {
-            return await _uow.TournamentRepo.AnyTournamentAsync(id);
-        }
-
         // PATCH: api/Tournaments/5
         [HttpPatch("{tournamentId}")]
         public async Task<ActionResult<TournamentDTO>> PatchTournament(int tournamentId, [FromBody]
