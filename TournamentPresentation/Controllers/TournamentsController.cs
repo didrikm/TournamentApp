@@ -5,6 +5,9 @@ using TournamentCore.Repositories;
 using TournamentCore.Mapping;
 using TournamentCore.DTOs;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using ServicesContracts;
+using TournamentShared;
 
 namespace TournamentPresentation.Controllers
 {
@@ -12,37 +15,28 @@ namespace TournamentPresentation.Controllers
     [ApiController]
     public class TournamentsController : ControllerBase
     {
-        private readonly IUnitOfWork _uow;
-        private readonly IMapper _mapper;
+        private readonly IServiceManager _serviceManager;
 
-        public TournamentsController(IUnitOfWork uow, IMapper mapper)
+        public TournamentsController(IServiceManager serviceManager)
         {
-            _uow = uow;
-            _mapper = mapper;
+            _serviceManager = serviceManager;
         }
 
         // GET: api/Tournaments
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tournament>>> GetTournament(bool includeGames)
+        public async Task<ActionResult<IEnumerable<TournamentDTO>>> GetTournament(bool includeGames)
         {
-            var tournaments = await _uow.TournamentRepo.GetTournamentsAsync(includeGames);
-            var tournamentDTOs = tournaments.Select(_mapper.MapToTournamentDTO).ToList();
-            return Ok(tournamentDTOs);
+            var result = await _serviceManager.TournamentService.GetTournamentsAsync(includeGames);
+            return Ok(result.Data);
         }
 
         // GET: api/Tournaments/5
         [HttpGet("{id}")]
         public async Task<ActionResult<TournamentDTO>> GetTournament(int id)
         {
-            var tournament = await _uow.TournamentRepo.GetTournamentAsync(id);
-
-            if (tournament == null)
-            {
-                return NotFound();
-            }
-            var tournamentDTO = _mapper.MapToTournamentDTO(tournament);
-
-            return Ok(tournamentDTO);
+            var result = await _serviceManager.TournamentService.GetTournamentAsync(id);
+            if (!result.Success) return NotFound(result.ErrorMessage);
+            return Ok(result.Data);
         }
 
         // PUT: api/Tournaments/5
@@ -50,108 +44,36 @@ namespace TournamentPresentation.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTournament(int id, TournamentDTO dto)
         {
-            if (id != dto.Id)
-            {
-                return BadRequest();
-            }
-
-            var oldTournament = await _uow.TournamentRepo.GetTournamentAsync(id);
-
-            if (oldTournament == null)
-            {
-                return NotFound();
-            }
-
-            oldTournament.Title = dto.Title;
-            oldTournament.StartDate = dto.StartDate;
-            _uow.TournamentRepo.Update(oldTournament);
-
-            try
-            {
-                await _uow.CompleteAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _uow.TournamentRepo.AnyTournamentAsync(id))
-                {
-                    return NotFound();
-                }
-            }
-
+            var result = await _serviceManager.TournamentService.PutTournament(id, dto);
+            if (!result.Success) return NotFound(result.ErrorMessage);
             return NoContent();
         }
 
         // POST: api/Tournaments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Tournament>> PostTournament(TournamentCreationDTO dto)
+        public async Task<ActionResult<TournamentDTO>> PostTournament(TournamentCreationDTO dto)
         {
-            var tournament = _mapper.MapToCreationTournament(dto);
-            _uow.TournamentRepo.Add(tournament);
-            await _uow.CompleteAsync();
-
-            return CreatedAtAction(nameof(GetTournament), new { id = tournament.Id }, _mapper.MapToTournamentDTO(tournament));
+            var result = await _serviceManager.TournamentService.PostTournament(dto);
+            return CreatedAtAction(nameof(GetTournament), new { id = result.Data.Id }, result.Data); //DOES THIS WORK LOL?
         }
 
         // DELETE: api/Tournaments/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTournament(int id)
         {
-            var tournament = await _uow.TournamentRepo.GetTournamentAsync(id);
-            if (tournament == null)
-            {
-                return NotFound();
-            }
-            _uow.TournamentRepo.Remove(tournament);
-            await _uow.CompleteAsync();
-
+            var result = await _serviceManager.TournamentService.DeleteTournament(id);
+            if (!result.Success) return NotFound(result.ErrorMessage);
             return NoContent();
         }
 
         // PATCH: api/Tournaments/5
         [HttpPatch("{tournamentId}")]
-        public async Task<ActionResult<TournamentDTO>> PatchTournament(int tournamentId, [FromBody]
+        public async Task<ActionResult<TournamentDTO>> PatchTournament(int id, [FromBody]
             JsonPatchDocument<TournamentDTO> patchDocument)
         {
-
-            if (patchDocument == null)
-            {
-                return BadRequest();
-            }
-
-            var oldTournament = await _uow.TournamentRepo.GetTournamentAsync(tournamentId);
-
-            if (oldTournament == null)
-            {
-                return NotFound();
-            }
-
-            var tournamentDTO = _mapper.MapToTournamentDTO(oldTournament);
-
-            patchDocument.ApplyTo(tournamentDTO, ModelState);
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            oldTournament.Title = tournamentDTO.Title;
-            oldTournament.StartDate = tournamentDTO.StartDate;
-
-            _uow.TournamentRepo.Update(oldTournament);
-
-            try
-            {
-                await _uow.CompleteAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _uow.TournamentRepo.AnyTournamentAsync(tournamentId))
-                {
-                    return NotFound();
-                }
-            }
-
+            var result = await _serviceManager.TournamentService.PatchTorunament(id, patchDocument);
+            if (!result.Success) return NotFound("Not found or validation error.");
             return NoContent();
         }
     }

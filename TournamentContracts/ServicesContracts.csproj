@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TournamentCore\TournamentCore.csproj" />
+    <ProjectReference Include="..\TournamentShared\TournamentShared.csproj" />
   </ItemGroup>
 
 </Project>
