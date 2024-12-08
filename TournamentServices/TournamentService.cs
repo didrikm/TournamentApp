@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using ServicesContracts;
 using TournamentCore.DTOs;
-using TournamentCore.Mapping;
 using TournamentCore.Repositories;
 using TournamentShared;
 

@@ -5,7 +5,7 @@ using TournamentData.Data;
 
 namespace TournamentData.Repositories
 {
-    internal class TournamentRepo : ITournamentRepo
+    public class TournamentRepo : ITournamentRepo
     {
 
         private readonly TournamentApiContext _context;

@@ -4,7 +4,7 @@ using TournamentCore.Repositories;
 using TournamentData.Data;
 namespace TournamentData.Repositories
 {
-    internal class GameRepo : IGameRepo
+    public class GameRepo : IGameRepo
     {
         private readonly TournamentApiContext _context;
 

@@ -1,7 +1,7 @@
 ﻿using TournamentCore.DTOs;
 using TournamentCore.Entities;
 
-namespace TournamentCore.Mapping
+namespace TournamentServices.Mapping
 {
     public static class GameMapper
     {

@@ -1,13 +1,7 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using TournamentCore.Entities;
-using TournamentCore.Repositories;
-using TournamentCore.Mapping;
 using TournamentCore.DTOs;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ServicesContracts;
-using TournamentShared;
 
 namespace TournamentPresentation.Controllers
 {

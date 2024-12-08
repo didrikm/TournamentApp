@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ServicesContracts;
 using TournamentCore.DTOs;
 using TournamentCore.Entities;
-using TournamentCore.Mapping;
 using TournamentCore.Repositories;
 
 namespace TournamentPresentation.Controllers

@@ -20,9 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TournamentCore\TournamentCore.csproj" />
     <ProjectReference Include="..\TournamentData\TournamentData.csproj" />
     <ProjectReference Include="..\TournamentPresentation\TournamentPresentation.csproj" />
+    <ProjectReference Include="..\TournamentServices\TournamentServices.csproj" />
   </ItemGroup>
 
 </Project>

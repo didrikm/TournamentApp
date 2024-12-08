@@ -1,7 +1,8 @@
-﻿using TournamentCore.DTOs;
+﻿using ServicesContracts;
+using TournamentCore.DTOs;
 using TournamentCore.Entities;
 
-namespace TournamentCore.Mapping
+namespace TournamentServices.Mapping
 {
     public class Mapper : IMapper
     {
