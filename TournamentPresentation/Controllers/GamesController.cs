@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ServicesContracts;
 using TournamentCore.DTOs;
 using TournamentCore.Entities;
-using TournamentCore.Repositories;
 
 namespace TournamentPresentation.Controllers
 {
@@ -52,7 +50,12 @@ namespace TournamentPresentation.Controllers
         public async Task<ActionResult<Game>> PostGame(GameCreationDTO dto)
         {
             var result = await _serviceManager.GameService.PostGame(dto);
-            if (!result.Success) return NotFound(result.ErrorMessage);
+            if (!result.Success)
+            {
+                // 10 games per tournament constraint. If >9 ErrorMessage starts with "N"
+                if (result.ErrorMessage.StartsWith("N")) return BadRequest(result.ErrorMessage);
+                return NotFound(result.ErrorMessage);
+            }
             return CreatedAtAction(nameof(GetGame), new { id = result.Data.Id }, result.Data);
         }
 

@@ -50,6 +50,7 @@ namespace TournamentServices
             var game = _mapper.MapToCreationGame(dto);
             var tournament = await _uow.TournamentRepo.GetTournamentAsync(dto.TournamentId);
             if (tournament == null) return ServiceResult<GameDTO>.BadRequest("Associated tournament not found.");
+            if (tournament.Games.Count > 9) return ServiceResult<GameDTO>.BadRequest("No more than 10 games per tournament.");
             game.tournament = tournament;
             _uow.GameRepo.Add(game);
             await _uow.CompleteAsync();
