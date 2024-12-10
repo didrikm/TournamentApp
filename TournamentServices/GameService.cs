@@ -38,7 +38,7 @@ namespace TournamentServices
             }
             if (game == null)
             {
-                return ServiceResult<GameDTO>.NotFound("Game was not found.");
+                return ServiceResult<GameDTO>.NotFound("Game was not found.");// TODO: standardisera ErrorMessage
             }
 
             var gameDTO = _mapper.MapToGameDTO(game);

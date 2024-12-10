@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using System.Reflection.Metadata.Ecma335;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 using ServicesContracts;
 using TournamentCore.DTOs;
 using TournamentCore.Repositories;
 using TournamentShared;
+using Microsoft.Extensions.Configuration;
+
 
 namespace TournamentServices
 {
@@ -11,20 +14,24 @@ namespace TournamentServices
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _uow;
+        private readonly IConfiguration _configuration;
 
-        public TournamentService(IUnitOfWork uow, IMapper mapper)
+        public TournamentService(IUnitOfWork uow, IMapper mapper, IConfiguration configuration)
         {
             _uow = uow;
             _mapper = mapper;
+            _configuration = configuration;
         }
-        public async Task<ServiceResult<IEnumerable<TournamentDTO>>> GetTournamentsAsync(bool includeGames, bool trackChanges = false)
+        public async Task<ServiceResult<IEnumerable<TournamentDTO>>> GetTournamentsAsync(bool includeGames, int pageSize, int pageNumber)
         {
-            var tournaments = await _uow.TournamentRepo.GetTournamentsAsync(includeGames);
+            var maxPageSize = int.Parse(_configuration.GetSection("MaxPageSize").Value);
+            if (pageSize > maxPageSize) pageSize = maxPageSize; 
+            var tournaments = await _uow.TournamentRepo.GetTournamentsAsync(includeGames, pageSize, pageNumber);
             var tournamentDTOs = tournaments.Select(_mapper.MapToTournamentDTO).ToList();
             return ServiceResult<IEnumerable<TournamentDTO>>.Ok(tournamentDTOs);
         }
 
-        public async Task<ServiceResult<TournamentDTO>> GetTournamentAsync(int id, bool trackChanges = false)
+        public async Task<ServiceResult<TournamentDTO>> GetTournamentAsync(int id)
         {
             var tournament = await _uow.TournamentRepo.GetTournamentAsync(id);
 
@@ -97,7 +104,7 @@ namespace TournamentServices
             return ServiceResult<TournamentDTO>.NoContent();
         }
 
-        public async Task<ServiceResult<TournamentDTO>> PatchTorunament(int id, JsonPatchDocument<TournamentDTO> patchDocument)
+        public async Task<ServiceResult<TournamentDTO>> PatchTournament(int id, JsonPatchDocument<TournamentDTO> patchDocument)
         {
 
             if (patchDocument == null)

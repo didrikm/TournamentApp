@@ -18,9 +18,9 @@ namespace TournamentPresentation.Controllers
 
         // GET: api/Tournaments
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TournamentDTO>>> GetTournament(bool includeGames)
+        public async Task<ActionResult<IEnumerable<TournamentDTO>>> GetTournament(bool includeGames, int pageSize = 20, int pageNumber = 1)
         {
-            var result = await _serviceManager.TournamentService.GetTournamentsAsync(includeGames);
+            var result = await _serviceManager.TournamentService.GetTournamentsAsync(includeGames, pageSize, pageNumber);
             return Ok(result.Data);
         }
 
@@ -66,7 +66,7 @@ namespace TournamentPresentation.Controllers
         public async Task<ActionResult<TournamentDTO>> PatchTournament(int id, [FromBody]
             JsonPatchDocument<TournamentDTO> patchDocument)
         {
-            var result = await _serviceManager.TournamentService.PatchTorunament(id, patchDocument);
+            var result = await _serviceManager.TournamentService.PatchTournament(id, patchDocument);
             if (!result.Success) return NotFound("Not found or validation error.");
             return NoContent();
         }

@@ -29,10 +29,23 @@ namespace TournamentData.Repositories
             return await _context.Tournament.Include(t => t.Games).FirstOrDefaultAsync(t => t.Id == id);
         }
 
-        public async Task<IEnumerable<Tournament>> GetTournamentsAsync(bool includeGames = false)
+        public async Task<IEnumerable<Tournament>> GetTournamentsAsync(bool includeGames, int pageSize, int pageNumber)
         {
-            return includeGames ? await _context.Tournament.Include(t => t.Games).ToListAsync() :
-                                     await _context.Tournament.ToListAsync();
+            if (includeGames)
+            {
+                return await _context.Tournament
+                     .Skip((pageNumber - 1) * pageSize)
+                     .Take(pageSize)
+                     .Include(t => t.Games)
+                     .ToListAsync();
+            }
+            else
+            {
+                return await _context.Tournament
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+            }
         }
 
         public void Remove(Tournament tournament)
