@@ -19,9 +19,9 @@ namespace TournamentPresentation.Controllers
 
         // GET: api/Games
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Game>>> GetGame()
+        public async Task<ActionResult<IEnumerable<Game>>> GetGame(int pageSize = 20, int pageNumber = 1)
         {
-            var result = await _serviceManager.GameService.GetGamesAsync();
+            var result = await _serviceManager.GameService.GetGamesAsync(pageSize, pageNumber);
             return Ok(result.Data);
         }
 

@@ -6,7 +6,7 @@ namespace ServicesContracts
 {
     public interface ITournamentService
     {
-        Task<ServiceResult<IEnumerable<TournamentDTO>>> GetTournamentsAsync(bool includeGames,  int pageSize = 20, int page = 1);
+        Task<ServiceResult<IEnumerable<TournamentDTO>>> GetTournamentsAsync(bool includeGames,  int pageSize, int pageNumber);
         Task<ServiceResult<TournamentDTO>> GetTournamentAsync(int id);
         Task<ServiceResult<TournamentDTO>> PostTournament(TournamentCreationDTO dto);  
         Task<ServiceResult<TournamentDTO>> PutTournament(int id, TournamentDTO dto); //TODO: fulfix, NoContent så borde inte vara TournamentDTO men void är inte accepterat

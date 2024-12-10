@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using ServicesContracts;
 using TournamentCore.DTOs;
 using TournamentCore.Entities;
@@ -12,20 +13,24 @@ namespace TournamentServices
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _uow;
+        private readonly IConfiguration _configuration;
 
-        public GameService(IMapper mapper, IUnitOfWork uow)
+        public GameService(IMapper mapper, IUnitOfWork uow, IConfiguration configuration)
         {
             _mapper = mapper;
             _uow = uow;
+            _configuration = configuration;
         }
-        public async Task<ServiceResult<IEnumerable<GameDTO>>> GetGamesAsync(bool trackChanges = false)
+        public async Task<ServiceResult<IEnumerable<GameDTO>>> GetGamesAsync(int pageSize, int pageNumber)
         {
-            var games = await _uow.GameRepo.GetGamesAsync();
+            var maxPageSize = int.Parse(_configuration.GetSection("MaxPageSize").Value);
+            if (pageSize > maxPageSize) pageSize = maxPageSize; 
+            var games = await _uow.GameRepo.GetGamesAsync(pageSize, pageNumber);
             var dtos = games.Select(_mapper.MapToGameDTO).ToList();
             return ServiceResult<IEnumerable<GameDTO>>.Ok(dtos);
         }
 
-        public async Task<ServiceResult<GameDTO>> GetGameAsync(string identifier, bool trackChanges = false)
+        public async Task<ServiceResult<GameDTO>> GetGameAsync(string identifier)
         {
             Game? game;
             if (int.TryParse(identifier, out int id))

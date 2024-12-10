@@ -31,9 +31,12 @@ namespace TournamentData.Repositories
         {
             return await _context.Game.FirstOrDefaultAsync(g => g.Title == title);
         }
-        public async Task<IEnumerable<Game>> GetGamesAsync()
+        public async Task<IEnumerable<Game>> GetGamesAsync(int pageSize, int pageNumber)
         {
-            return await _context.Game.ToListAsync();
+            return await _context.Game
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
 
         public void Remove(Game Game)
