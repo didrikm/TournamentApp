@@ -4,7 +4,7 @@ using TournamentData.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 //builder.Services.AddDbContext<TournamentApiContext>(options =>
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("TournamentApiContext") ?? throw new InvalidOperationException("Connection string 'TournamentApiContext' not found.")));
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString") ?? throw new InvalidOperationException("Connection string 'TournamentApiContext' not found.")));
 var connectionString = Environment.GetEnvironmentVariable("ASPNETCORE_DATABASE_CONNECTION_STRING")
     ?? throw new InvalidOperationException("Connection string environment variable 'ASPNETCORE_DATABASE_CONNECTION_STRING' not found.");
 
@@ -22,8 +22,8 @@ builder.Services.ConfigureRepositories();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-app.UseSwagger();
-app.UseSwaggerUI();
+//app.UseSwagger();
+//app.UseSwaggerUI();
 await app.SeedDataAsync();
 
 app.UseHttpsRedirection();
