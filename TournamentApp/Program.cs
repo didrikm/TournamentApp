@@ -3,8 +3,11 @@ using TournamentApi.Extensions;
 using TournamentData.Data;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<TournamentApiContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("TournamentApiContext") ?? throw new InvalidOperationException("Connection string 'TournamentApiContext' not found.")));
+//builder.Services.AddDbContext<TournamentApiContext>(options =>
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("TournamentApiContext") ?? throw new InvalidOperationException("Connection string 'TournamentApiContext' not found.")));
+var connectionString = Environment.GetEnvironmentVariable("ASPNETCORE_DATABASE_CONNECTION_STRING")
+    ?? throw new InvalidOperationException("Connection string environment variable 'ASPNETCORE_DATABASE_CONNECTION_STRING' not found.");
+
 
 // Add services to the container.
 

@@ -26,6 +26,8 @@ namespace TournamentServices
         {
             var maxPageSize = int.Parse(_configuration.GetSection("MaxPageSize").Value);
             if (pageSize > maxPageSize) pageSize = maxPageSize; 
+            if (pageSize  < 1) pageSize = 20;
+            if (pageNumber < 1) pageNumber = 1;
             var tournaments = await _uow.TournamentRepo.GetTournamentsAsync(includeGames, pageSize, pageNumber);
             var tournamentDTOs = tournaments.Select(_mapper.MapToTournamentDTO).ToList();
             return ServiceResult<IEnumerable<TournamentDTO>>.Ok(tournamentDTOs);
@@ -37,7 +39,7 @@ namespace TournamentServices
 
             if (tournament == null)
             {
-                return ServiceResult<TournamentDTO>.NotFound("The tournament could not be found.");
+                return new ServiceResult<TournamentDTO>().NotFound("The tournament could not be found.");
             }
             var tournamentDTO = _mapper.MapToTournamentDTO(tournament);
             return ServiceResult<TournamentDTO>.Ok(tournamentDTO);
@@ -53,7 +55,7 @@ namespace TournamentServices
             }
             catch (DbUpdateConcurrencyException)
             {
-                return ServiceResult<TournamentDTO>.NotFound("Tournament not found in DB.");
+                return new ServiceResult<TournamentDTO>().NotFound("Tournament not found in DB.");
             }
             var returnDTO = _mapper.MapToTournamentDTO(tournament);
             return ServiceResult<TournamentDTO>.Ok(returnDTO); //TODO: CreatedAtAction
@@ -64,14 +66,14 @@ namespace TournamentServices
 
             if (id != dto.Id)
             {
-                return ServiceResult<TournamentDTO>.BadRequest("URL id and DTO id do not match.");
+                return new ServiceResult<TournamentDTO>().BadRequest("URL id and DTO id do not match.");
             }
 
             var oldTournament = await _uow.TournamentRepo.GetTournamentAsync(id);
 
             if (oldTournament == null)
             {
-                return ServiceResult<TournamentDTO>.NotFound("Tournament not found.");
+                return new ServiceResult<TournamentDTO>().NotFound("Tournament not found.");
             }
 
             oldTournament.Title = dto.Title;
@@ -86,7 +88,7 @@ namespace TournamentServices
             {
                 if (!await _uow.TournamentRepo.AnyTournamentAsync(id))
                 {
-                    return ServiceResult<TournamentDTO>.NotFound("Tournament not found in DB.");
+                    return new ServiceResult<TournamentDTO>().NotFound("Tournament not found in DB.");
                 }
             }
             return ServiceResult<TournamentDTO>.NoContent();
@@ -97,7 +99,7 @@ namespace TournamentServices
             var tournament = await _uow.TournamentRepo.GetTournamentAsync(id);
             if (tournament == null)
             {
-                return ServiceResult<TournamentDTO>.NotFound("Tournament not found.");
+                return new ServiceResult<TournamentDTO>().NotFound("Tournament not found.");
             }
             _uow.TournamentRepo.Remove(tournament);
             await _uow.CompleteAsync();
@@ -109,14 +111,14 @@ namespace TournamentServices
 
             if (patchDocument == null)
             {
-                return ServiceResult<TournamentDTO>.BadRequest("Missing PATCH document.");
+                return new ServiceResult<TournamentDTO>().BadRequest("Missing PATCH document.");
             }
 
             var oldTournament = await _uow.TournamentRepo.GetTournamentAsync(id);
 
             if (oldTournament == null)
             {
-                return ServiceResult<TournamentDTO>.NotFound("Tournament not found.");
+                return new ServiceResult<TournamentDTO>().NotFound("Tournament not found.");
             }
 
             var tournamentDTO = _mapper.MapToTournamentDTO(oldTournament);
@@ -142,7 +144,7 @@ namespace TournamentServices
             {
                 if (!await _uow.TournamentRepo.AnyTournamentAsync(id))
                 {
-                    return ServiceResult<TournamentDTO>.NotFound("Tournament not found in DB.");
+                    return new ServiceResult<TournamentDTO>().NotFound("Tournament not found in DB.");
                 }
             }
             return ServiceResult<TournamentDTO>.NoContent();

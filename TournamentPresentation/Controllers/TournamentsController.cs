@@ -49,7 +49,7 @@ namespace TournamentPresentation.Controllers
         public async Task<ActionResult<TournamentDTO>> PostTournament(TournamentCreationDTO dto)
         {
             var result = await _serviceManager.TournamentService.PostTournament(dto);
-            return CreatedAtAction(nameof(GetTournament), new { id = result.Data.Id }, result.Data); //DOES THIS WORK LOL?
+            return CreatedAtAction(nameof(GetTournament), new { id = result.Data.Id }, result.Data); 
         }
 
         // DELETE: api/Tournaments/5
@@ -67,7 +67,7 @@ namespace TournamentPresentation.Controllers
             JsonPatchDocument<TournamentDTO> patchDocument)
         {
             var result = await _serviceManager.TournamentService.PatchTournament(id, patchDocument);
-            if (!result.Success) return NotFound("Not found or validation error.");
+            if (!result.Success) return NotFound(result.ErrorMessage);
             return NoContent();
         }
     }

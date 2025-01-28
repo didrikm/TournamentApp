@@ -21,6 +21,7 @@ namespace TournamentPresentation.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Game>>> GetGame(int pageSize = 20, int pageNumber = 1)
         {
+            Console.WriteLine("IT DO WORK");
             var result = await _serviceManager.GameService.GetGamesAsync(pageSize, pageNumber);
             return Ok(result.Data);
         }
@@ -30,7 +31,7 @@ namespace TournamentPresentation.Controllers
         public async Task<ActionResult<Game>> GetGame(string identifier)
         {
             var result = await _serviceManager.GameService.GetGameAsync(identifier);
-            if (!result.Success) return NotFound(result.ErrorMessage);
+            if (!result.Success) return NotFound(result.ProblemDetails);
             return Ok(result.Data);
         }
 

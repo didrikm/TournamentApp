@@ -43,7 +43,10 @@ namespace TournamentServices
             }
             if (game == null)
             {
-                return ServiceResult<GameDTO>.NotFound("Game was not found.");// TODO: standardisera ErrorMessage
+                return
+                    new ServiceResult<GameDTO>()
+                        .NotFound(
+                            "Game not found."); //ServiceResult<GameDTO>.NotFound("Game was not found.");// TODO: standardisera ErrorMessage
             }
 
             var gameDTO = _mapper.MapToGameDTO(game);
@@ -54,8 +57,8 @@ namespace TournamentServices
         {
             var game = _mapper.MapToCreationGame(dto);
             var tournament = await _uow.TournamentRepo.GetTournamentAsync(dto.TournamentId);
-            if (tournament == null) return ServiceResult<GameDTO>.BadRequest("Associated tournament not found.");
-            if (tournament.Games.Count > 9) return ServiceResult<GameDTO>.BadRequest("No more than 10 games per tournament.");
+            if (tournament == null) return new ServiceResult<GameDTO>().BadRequest("Associated tournament not found.");
+            if (tournament.Games.Count > 9) return new ServiceResult<GameDTO>().BadRequest("No more than 10 games per tournament.");
             game.tournament = tournament;
             _uow.GameRepo.Add(game);
             await _uow.CompleteAsync();
@@ -67,19 +70,19 @@ namespace TournamentServices
         {
             if (id != dto.Id)
             {
-                return ServiceResult<GameDTO>.BadRequest("Route and body do not match.");
+                return new ServiceResult<GameDTO>().BadRequest("Route and body do not match.");
             }
 
             var oldGame = await _uow.GameRepo.GetGameAsync(id);
 
             if (oldGame == null)
             {
-                return ServiceResult<GameDTO>.NotFound("The specified GameId does not exist.");
+                return new ServiceResult<GameDTO>().NotFound("The specified GameId does not exist.");
             }
 
             if (!await _uow.TournamentRepo.AnyTournamentAsync(dto.TournamentId))
             {
-                return ServiceResult<GameDTO>.NotFound("The specified GameId does not exist.");
+                return new ServiceResult<GameDTO>().NotFound("The specified GameId does not exist.");
             }
 
             oldGame.Title = dto.Title;
@@ -96,7 +99,7 @@ namespace TournamentServices
             {
                 if (!await _uow.GameRepo.AnyGameAsync(id))
                 {
-                    return ServiceResult<GameDTO>.NotFound("The specified GameId does not exist.");
+                    return new ServiceResult<GameDTO>().NotFound("The specified GameId does not exist.");
                 }
             }
             return ServiceResult<GameDTO>.NoContent();
@@ -107,7 +110,7 @@ namespace TournamentServices
             var game = await _uow.GameRepo.GetGameAsync(id);
             if (game == null)
             {
-                return ServiceResult<GameDTO>.NotFound("Game not found.");
+                return new ServiceResult<GameDTO>().NotFound("Game not found.");
             }
             _uow.GameRepo.Remove(game);
             await _uow.CompleteAsync();
@@ -118,14 +121,14 @@ namespace TournamentServices
         {
             if (patchDocument == null)
             {
-                return ServiceResult<GameDTO>.BadRequest("Missing patch document.");
+                return new ServiceResult<GameDTO>().BadRequest("Missing patch document.");
             }
 
             var oldGame = await _uow.GameRepo.GetGameAsync(id);
 
             if (oldGame == null)
             {
-                return ServiceResult<GameDTO>.NotFound("Id not found.");
+                return new ServiceResult<GameDTO>().NotFound("Id not found.");
             }
 
             var gameDTO = _mapper.MapToGameDTO(oldGame);
@@ -151,7 +154,7 @@ namespace TournamentServices
             {
                 if (!await _uow.GameRepo.AnyGameAsync(id))
                 {
-                    return ServiceResult<GameDTO>.NotFound("Id not found in DB.");
+                    return new ServiceResult<GameDTO>().NotFound("Id not found in DB.");
                 }
             }
             return ServiceResult<GameDTO>.NoContent();
