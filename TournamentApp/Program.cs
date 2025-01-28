@@ -16,7 +16,7 @@ builder.Services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true)
     .AddXmlDataContractSerializerFormatters();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen();
 builder.Services.ConfigureServiceLayerServices();
 builder.Services.ConfigureRepositories();
 var app = builder.Build();
