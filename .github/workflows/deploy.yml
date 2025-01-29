@@ -1,0 +1,15 @@
+name: Windows Container Workflow
+on: [push]
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: azure/docker-login@v1
+      with:
+        login-server: tournamentapp.azurecr.io
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+    - run: |
+        docker build . -t tournamentapp.azurecr.io/TournamentApp:${{ github.sha }}
+        docker push torunamentapp.azurecr.io/TournamentApp:${{ github.sha }}
