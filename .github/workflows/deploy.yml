@@ -13,3 +13,4 @@ jobs:
     - run: |
         docker build . -t tournamentapp.azurecr.io/TournamentApp:${{ github.sha }}
         docker push torunamentapp.azurecr.io/TournamentApp:${{ github.sha }}
+# test
