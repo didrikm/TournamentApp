@@ -1,5 +1,5 @@
 # Use the official .NET SDK image to build the app
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0.405-windowsservercore-ltsc2022 AS build
 WORKDIR /app
 
 # Copy the solution file and project files
