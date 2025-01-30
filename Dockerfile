@@ -4,8 +4,8 @@ WORKDIR /app
 
 # Copy the solution file and project files
 COPY *.sln ./
-COPY TournamentApp/TournamentApi.csproj TournamentApp/
-COPY TournamentContracts/ServicesContracts.csproj TournamentContracts/
+COPY TournamentApi/TournamentApi.csproj TournamentApi/
+COPY ServicesContracts/ServicesContracts.csproj ServicesContracts/
 COPY TournamentCore/TournamentCore.csproj TournamentCore/
 COPY TournamentData/TournamentData.csproj TournamentData/
 COPY TournamentPresentation/TournamentPresentation.csproj TournamentPresentation/
