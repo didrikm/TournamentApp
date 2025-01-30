@@ -19,10 +19,10 @@ RUN dotnet restore
 COPY . .
 
 # Build and publish the main app
-RUN dotnet publish TournamentApp/TournamentApp.csproj -c Release -o out
+RUN dotnet publish TournamentApi/TournamentApi.csproj -c Release -o out
 
 # Use the official ASP.NET runtime image to run the app
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /app/out .
-ENTRYPOINT ["dotnet", "TournamentApp.dll"]
+ENTRYPOINT ["dotnet", "TournamentApi.dll"]
