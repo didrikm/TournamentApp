@@ -22,7 +22,7 @@ COPY . .
 RUN dotnet publish TournamentApi/TournamentApi.csproj -c Release -o out
 
 # Use the official ASP.NET runtime image to run the app
-FROM mcr.microsoft.com/dotnet/aspnet:8.0.405-windowsservercore-ltsc2022
+FROM mcr.microsoft.com/dotnet/aspnet:8.0.12-windowsservercore-ltsc2022
 WORKDIR /app
 COPY --from=build /app/out .
 ENTRYPOINT ["dotnet", "TournamentApi.dll"]
