@@ -12,5 +12,5 @@ jobs:
         password: ${{ secrets.REGISTRY_PASSWORD }}
     - run: |
         docker build . -t tournamentapp.azurecr.io/tournamentapp:${{ github.sha }}
-        docker push torunamentapp.azurecr.io/tournamentapp:${{ github.sha }}
+        docker push tournamentapp.azurecr.io/tournamentapp:${{ github.sha }}
 
